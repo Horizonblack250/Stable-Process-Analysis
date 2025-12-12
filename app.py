@@ -88,7 +88,7 @@ def calculate_stats(series):
 # --- 3. MAIN APPLICATION ---
 def main():
     # Header
-    st.title("QualSteam Real Dairy Stable Process (SOPT)")
+    st.title("QualSteam Real Dairy Stable Process (SOPT Included)")
 
     # Load Data
     df = load_data()
