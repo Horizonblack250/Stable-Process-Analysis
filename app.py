@@ -6,7 +6,6 @@ from plotly.subplots import make_subplots
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(
     page_title="QualSteam SOPT Dashboard",
-    page_icon="🏭",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -67,7 +66,7 @@ st.markdown("""
 # --- 2. DATA LOADING ---
 @st.cache_data
 def load_data():
-    # UPDATED: Pointing to the specific GitHub/project folder structure
+    # Pointing to the specific GitHub/project folder structure
     file_path = 'data/df_stable_only.csv'
     
     try:
@@ -89,16 +88,31 @@ def calculate_stats(series):
 # --- 3. MAIN APPLICATION ---
 def main():
     # Header
-    st.title("🏭 QualSteam Real Dairy Stable Process (SOPT)")
+    st.title("QualSteam Real Dairy Stable Process (SOPT)")
 
     # Load Data
     df = load_data()
 
     if df is None:
-        st.error(f"⚠️ Data file not found at `data/df_stable_only.csv`. Please ensure the file exists in your repository.")
+        st.error(f"Data file not found at `data/df_stable_only.csv`. Please ensure the file exists in your repository.")
         st.stop()
 
-    # --- SIDEBAR: SELECTION ---
+    # --- SIDEBAR: GLOBAL STATS & SELECTION ---
+    st.sidebar.header("Dataset Overview")
+    
+    # Global Metrics Calculation
+    # Hardcoded total based on provided analysis (calculate_coverage.py)
+    TOTAL_RAW_ROWS = 41830 
+    stable_rows = len(df)
+    coverage_pct = (stable_rows / TOTAL_RAW_ROWS) * 100
+    
+    st.sidebar.info(f"""
+    **Total Raw Data Rows:** {TOTAL_RAW_ROWS:,}
+    \n**Stable Process Rows:** {stable_rows:,}
+    \n**Stable Data Percentage:** {coverage_pct:.2f}%
+    """)
+    
+    st.sidebar.markdown("---")
     st.sidebar.header("Batch Selection")
     
     # Get unique batches
@@ -204,7 +218,6 @@ def main():
             paper_bgcolor="white",
             hovermode="x unified",
             margin=dict(l=20, r=20, t=50, b=20),
-            # UPDATED: Added explicit font color for legend
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="black")),
             font=dict(color="black") # Force all global text to black
         )
@@ -230,8 +243,8 @@ def main():
         st.plotly_chart(fig, use_container_width=True)
 
     with col_stats:
-        st.subheader("📊 Statistics")
-        # UPDATED: Using HTML to force text color to black
+        st.subheader("Statistics")
+        # Using HTML to force text color to black
         st.markdown('<p style="color:black; font-weight:500;">Detailed breakdown for the stable phase.</p>', unsafe_allow_html=True)
         
         # Helper to display stats card
@@ -257,8 +270,6 @@ def main():
         stats_p2 = calculate_stats(batch_data['Outlet Steam Pressure'])
         stat_card("Outlet Pressure P2 (Bar)", stats_p2, c_p2)
         
-        # REMOVED P1 Statistics as requested
-
         # 3. Flow Stats
         stats_flow = calculate_stats(batch_data['Steam Flow Rate'])
         stat_card("Steam Flow (kg/hr)", stats_flow, c_flow)
