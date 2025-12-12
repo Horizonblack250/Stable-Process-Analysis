@@ -203,9 +203,13 @@ def main():
             plot_bgcolor="white",
             paper_bgcolor="white",
             hovermode="x unified",
-            margin=dict(l=20, r=20, t=40, b=20),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            margin=dict(l=20, r=20, t=50, b=20),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            font=dict(color="black") # Force all text to black for visibility
         )
+
+        # Explicitly ensure subplot titles are black
+        fig.update_annotations(font_color="black", font_size=16)
         
         # Update Axes
         fig.update_yaxes(title_text="Temp (°C)", row=1, col=1, gridcolor='#f0f0f0')
