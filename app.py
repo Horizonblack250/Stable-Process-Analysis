@@ -11,42 +11,55 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for "Stunning" UI
+# Custom CSS for Visibility and Contrast
 st.markdown("""
     <style>
-    .main {
-        background-color: #f8f9fa;
-    }
+    /* Main Background */
     .stApp {
-        background-color: #ffffff;
+        background-color: #e0e5ec; /* Darker slate-grey for contrast */
     }
-    h1 {
-        color: #1E3A8A;
+    
+    /* Headers */
+    h1, h2, h3 {
+        color: #1a202c !important; /* Force dark text for headers */
         font-family: 'Helvetica Neue', sans-serif;
-        font-weight: 700;
+    }
+    
+    h1 {
+        border-bottom: 2px solid #cbd5e0;
         padding-bottom: 1rem;
-        border-bottom: 2px solid #e5e7eb;
     }
-    h3 {
-        color: #374151;
-        font-weight: 600;
-    }
+
+    /* Metric Cards */
     .metric-card {
         background-color: #ffffff;
-        padding: 15px;
-        border-radius: 10px;
+        padding: 20px;
+        border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         text-align: center;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #cbd5e0;
+        margin-bottom: 10px;
     }
     .metric-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #1E3A8A;
+        font-size: 26px;
+        font-weight: 800;
+        color: #1E3A8A; /* Dark Blue */
     }
     .metric-label {
-        font-size: 14px;
-        color: #6B7280;
+        font-size: 15px;
+        color: #4A5568; /* Dark Grey */
+        font-weight: 600;
+        margin-top: 5px;
+    }
+
+    /* Stat Cards (Sidebar/Right column) */
+    .stat-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        color: #2d3748;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -54,10 +67,11 @@ st.markdown("""
 # --- 2. DATA LOADING ---
 @st.cache_data
 def load_data():
-    # Attempt to load from the standard output path
-    # If running locally, ensure the path is correct or upload via UI
+    # UPDATED: Pointing to the specific GitHub/project folder structure
+    file_path = 'data/df_stable_only.csv'
+    
     try:
-        df = pd.read_csv('/content/outputs/df_stable_only.csv') # Default path from previous steps
+        df = pd.read_csv(file_path)
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
         return df
     except FileNotFoundError:
@@ -81,13 +95,8 @@ def main():
     df = load_data()
 
     if df is None:
-        st.warning("⚠️ Data file (`df_stable_only.csv`) not found. Please upload the processed CSV.")
-        uploaded_file = st.file_uploader("Upload Batch CSV", type="csv")
-        if uploaded_file is not None:
-            df = pd.read_csv(uploaded_file)
-            df['Timestamp'] = pd.to_datetime(df['Timestamp'])
-        else:
-            st.stop()
+        st.error(f"⚠️ Data file not found at `data/df_stable_only.csv`. Please ensure the file exists in your repository.")
+        st.stop()
 
     # --- SIDEBAR: SELECTION ---
     st.sidebar.header("Batch Selection")
@@ -214,14 +223,14 @@ def main():
         # Helper to display stats card
         def stat_card(title, stats_dict, color_border):
             st.markdown(f"""
-            <div style="border-left: 5px solid {color_border}; background-color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <h4 style="margin:0; color: #333;">{title}</h4>
-                <div style="font-size: 0.9em; margin-top: 5px;">
-                    <b>Mean:</b> {stats_dict['Mean']}<br>
-                    <b>Median:</b> {stats_dict['Median']}<br>
-                    <b>Max:</b> {stats_dict['Max']}<br>
-                    <b>Min:</b> {stats_dict['Min']}<br>
-                    <b>Std:</b> {stats_dict['Std Dev']}
+            <div class="stat-box" style="border-left: 5px solid {color_border};">
+                <h4 style="margin:0; color: #1a202c; font-size: 16px;">{title}</h4>
+                <div style="font-size: 0.95em; margin-top: 8px; color: #4a5568;">
+                    <div style="display:flex; justify-content:space-between;"><span>Mean:</span> <b>{stats_dict['Mean']}</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Median:</span> <b>{stats_dict['Median']}</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Max:</span> <b>{stats_dict['Max']}</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Min:</span> <b>{stats_dict['Min']}</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Std:</span> <b>{stats_dict['Std Dev']}</b></div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
