@@ -13,12 +13,34 @@ st.set_page_config(
 # Custom CSS for Visibility and Contrast
 st.markdown("""
     <style>
-    /* Main Background */
+    /* 1. Main Background */
     .stApp {
         background-color: #e0e5ec; /* Darker slate-grey for contrast */
     }
     
-    /* Headers */
+    /* 2. SIDEBAR STYLING (Force Light Theme) */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #cbd5e0;
+    }
+    
+    /* Force all text in sidebar to be dark */
+    [data-testid="stSidebar"] * {
+        color: #2d3748 !important;
+    }
+
+    /* Specific fixes for Sidebar headers/inputs to ensure they override defaults */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+        color: #1a202c !important;
+    }
+    
+    /* Fix for Selectbox labels */
+    [data-testid="stSidebar"] label {
+        color: #4a5568 !important;
+        font-weight: 600 !important;
+    }
+
+    /* 3. Headers (Main Content) */
     h1, h2, h3 {
         color: #1a202c !important; /* Force dark text for headers */
         font-family: 'Helvetica Neue', sans-serif;
@@ -29,7 +51,7 @@ st.markdown("""
         padding-bottom: 1rem;
     }
 
-    /* Metric Cards */
+    /* 4. Metric Cards */
     .metric-card {
         background-color: #ffffff;
         padding: 20px;
@@ -51,7 +73,7 @@ st.markdown("""
         margin-top: 5px;
     }
 
-    /* Stat Cards (Sidebar/Right column) */
+    /* 5. Stat Cards (Right column) */
     .stat-box {
         background-color: #ffffff;
         border-radius: 8px;
