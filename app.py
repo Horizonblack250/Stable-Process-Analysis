@@ -204,7 +204,8 @@ def main():
             paper_bgcolor="white",
             hovermode="x unified",
             margin=dict(l=20, r=20, t=50, b=20),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            # UPDATED: Added explicit font color for legend
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="black")),
             font=dict(color="black") # Force all global text to black
         )
 
@@ -230,7 +231,8 @@ def main():
 
     with col_stats:
         st.subheader("📊 Statistics")
-        st.markdown("Detailed breakdown for the stable phase.")
+        # UPDATED: Using HTML to force text color to black
+        st.markdown('<p style="color:black; font-weight:500;">Detailed breakdown for the stable phase.</p>', unsafe_allow_html=True)
         
         # Helper to display stats card
         def stat_card(title, stats_dict, color_border):
