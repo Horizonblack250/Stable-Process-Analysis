@@ -205,18 +205,26 @@ def main():
             hovermode="x unified",
             margin=dict(l=20, r=20, t=50, b=20),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            font=dict(color="black") # Force all text to black for visibility
+            font=dict(color="black") # Force all global text to black
         )
 
         # Explicitly ensure subplot titles are black
         fig.update_annotations(font_color="black", font_size=16)
         
-        # Update Axes
-        fig.update_yaxes(title_text="Temp (°C)", row=1, col=1, gridcolor='#f0f0f0')
-        fig.update_yaxes(title_text="Bar", row=2, col=1, gridcolor='#f0f0f0')
-        fig.update_yaxes(title_text="kg/hr", row=3, col=1, gridcolor='#f0f0f0')
-        fig.update_yaxes(title_text="%", row=4, col=1, gridcolor='#f0f0f0', range=[0, 105])
-        fig.update_xaxes(gridcolor='#f0f0f0', row=4, col=1)
+        # Explicitly set axis tick labels and titles to black
+        axis_font_settings = dict(
+            gridcolor='#f0f0f0',
+            tickfont=dict(color='black'),
+            title_font=dict(color='black')
+        )
+
+        # Apply axis settings
+        fig.update_yaxes(title_text="Temp (°C)", row=1, col=1, **axis_font_settings)
+        fig.update_yaxes(title_text="Bar", row=2, col=1, **axis_font_settings)
+        fig.update_yaxes(title_text="kg/hr", row=3, col=1, **axis_font_settings)
+        fig.update_yaxes(title_text="%", row=4, col=1, range=[0, 105], **axis_font_settings)
+        
+        fig.update_xaxes(row=4, col=1, **axis_font_settings)
 
         st.plotly_chart(fig, use_container_width=True)
 
@@ -247,9 +255,7 @@ def main():
         stats_p2 = calculate_stats(batch_data['Outlet Steam Pressure'])
         stat_card("Outlet Pressure P2 (Bar)", stats_p2, c_p2)
         
-        # 2b. P1 Stats
-        stats_p1 = calculate_stats(batch_data['Inlet Steam Pressure'])
-        stat_card("Inlet Pressure P1 (Bar)", stats_p1, c_p1)
+        # REMOVED P1 Statistics as requested
 
         # 3. Flow Stats
         stats_flow = calculate_stats(batch_data['Steam Flow Rate'])
